@@ -15,7 +15,9 @@
   display: none;
 }
 
-
+.el-form-item__error {
+  color: #fff
+}
 // to fixed https://github.com/ElemeFE/element/issues/2461
 .el-dialog {
   transform: none;
