@@ -69,13 +69,13 @@
 </template>
 
 <script>
-import { validateMobile } from "@/utils/validate";
-
+import { validMobile } from "@/utils/validate";
+import { mapActions } from "vuex";
 export default {
   name: "Login",
   data() {
     const validateMobile = (rule, value, callback) => {
-      validateMobile(value)?callback():callback(new Error('手机号格式不正确'))
+      validMobile(value) ? callback() : callback(new Error("手机号格式不正确"));
     };
     return {
       loginForm: {
@@ -84,12 +84,17 @@ export default {
       },
       loginRules: {
         mobile: [
-          { required: true, trigger: "blur", message:'手机号不能为空' },
-          {validator:validateMobile,trigger:"blur"}
+          { required: true, trigger: "blur", message: "手机号不能为空" },
+          { validator: validateMobile, trigger: "blur" },
         ],
         password: [
-          { required: true, trigger: "blur", message:'密码不能为空' },
-          {min:6,max:16,message:'密码的长度在6-16位之间',trigger:'blur'}
+          { required: true, trigger: "blur", message: "密码不能为空" },
+          {
+            min: 6,
+            max: 16,
+            message: "密码的长度在6-16位之间",
+            trigger: "blur",
+          },
         ],
       },
       loading: false,
@@ -117,21 +122,22 @@ export default {
       });
     },
     handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(async(valid) => {
         if (valid) {
-          this.loading = true;
-          this.$store
-            .dispatch("user/login", this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || "/" });
-              this.loading = false;
-            })
-            .catch(() => {
-              this.loading = false;
-            });
-        } else {
-          console.log("error submit!!");
-          return false;
+          try {
+             this.loading = true
+             console.log(this.$store);
+            //如果校验成功
+            //派发action
+           const result =  await this.$store.dispatch("login", this.loginForm);
+           console.log(result);
+           //跳转到首页
+           this.$router.push('/')
+          } catch (error) {
+            console.log(error);
+          }finally{
+            this.loading = false
+          }
         }
       });
     },
@@ -155,7 +161,6 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
-  
   .el-input {
     display: inline-block;
     height: 47px;
@@ -185,7 +190,7 @@ $cursor: #fff;
     color: #454545;
   }
   .el-form-item__error {
-    color: #fff
+    color: #fff;
   }
 }
 </style>
@@ -196,7 +201,6 @@ $dark_gray: #889aa4;
 $light_gray: #68b0fe; // 将输入框颜色改成蓝色
 
 .login-container {
-  
   min-height: 100%;
   width: 100%;
   // background-color: $bg;
