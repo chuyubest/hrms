@@ -14,7 +14,7 @@ router.beforeEach(async(to,from,next)=>{
     }else{
       //如果vuex中有用户id表示已经获取了 没有id才需要获取用户资料
       if(!store.getters.userId){
-        await store.dispatch('getUserInfo')
+        await store.dispatch('user/getUserInfo')
       } 
       next()
     }

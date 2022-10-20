@@ -129,7 +129,7 @@ export default {
              console.log(this.$store);
             //如果校验成功
             //派发action
-           const result =  await this.$store.dispatch("login", this.loginForm);
+           const result =  await this.$store.dispatch("user/login", this.loginForm);
            console.log(result);
            //跳转到首页
            this.$router.push('/')

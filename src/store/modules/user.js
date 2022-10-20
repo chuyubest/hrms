@@ -25,8 +25,7 @@ const mutations={
   },
   //删除用户信息
   removeUserInfo(state){
-    state.userInfo = {},
-    removeToken()
+    state.userInfo = {}
   }
 }
 //异步请求
@@ -49,11 +48,17 @@ const actions = {
     context.commit('saveUserInfo',baseResult)
     return result //为什么要return 后期做权限埋下伏笔
   },
-  
+  // 用户退出
+  logout(context){
+    //删除token
+    context.commit('removeToken')
+    //删除用户资料
+    context.commit('removeUserInfo')
+  }
 
 }
 export default {
-  namespace:true,
+  namespaced:true,
   state,
   mutations,
   actions

@@ -22,6 +22,7 @@ export function getUserDetailById(id){
       url:`/sys/user/${id}`
    })
 }
+//用户退出
 export function logout() {
   
 }
