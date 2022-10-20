@@ -14,7 +14,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="staffPhoto" class="user-avatar" />
+          <img :src="staffPhoto" class="user-avatar" v-imageError="defaultImg" />
           <span class="name">{{name}}</span>
           <i class="el-icon-caret-bottom" style="color: #fff" />
         </div>
@@ -40,6 +40,11 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 
 export default {
+  data(){
+    return {
+      defaultImg:require('@/assets/common/head1.jpg')
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger,
