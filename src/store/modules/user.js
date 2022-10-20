@@ -1,6 +1,6 @@
  //引入token工具函数
  import {getToken,setToken,removeToken} from '@/utils/auth'
- import {login,getUserInfo} from '@/api/user'
+ import {login,getUserInfo,getUserDetailById} from '@/api/user'
  //状态
  const state = {
   //设置token的初始状态
@@ -42,7 +42,11 @@ const actions = {
   async getUserInfo(context){
     //调用获取用户接口
     const result =  await getUserInfo()
-    context.commit('saveUserInfo',result)
+    //获取用户详情
+    const baseInfo = await getUserDetailById(result.userId)
+    //将两个接口结果进行合并
+    const baseResult = {...result,...baseInfo}
+    context.commit('saveUserInfo',baseResult)
     return result //为什么要return 后期做权限埋下伏笔
   },
   

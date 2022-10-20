@@ -16,7 +16,12 @@ export function getUserInfo() {
       method:'post',
   })
 }
-
+//根据用户id获取用户详情 可获得头像
+export function getUserDetailById(id){
+   return request({
+      url:`/sys/user/${id}`
+   })
+}
 export function logout() {
   
 }
