@@ -31,7 +31,7 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      return this.$router.options.routes //当前所有的路由对象
     },
     activeMenu() {
       const route = this.$route
