@@ -11,6 +11,7 @@ export default {
         //路由元信息
         meta:{
             title:'审批',//左侧导航读取了这里的title属性
+            icon:'tree-table'
         }
     }]
 }

@@ -11,6 +11,7 @@ export default {
         //路由元信息
         meta:{
             title:'权限管理',//左侧导航读取了这里的title属性
+            icon:'lock'
         }
     }]
 }

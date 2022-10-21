@@ -11,6 +11,7 @@ export default {
         //路由元信息
         meta:{
             title:'工资',//左侧导航读取了这里的title属性
+            icon:'money'
         }
     }]
 }
