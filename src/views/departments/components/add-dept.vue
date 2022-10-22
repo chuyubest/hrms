@@ -2,7 +2,7 @@
   <!-- 放置弹层组件 -->
   <el-dialog
     title="新增部门"
-    :visible.sync="dialogVisible"
+    :visible="showDialog"
     width="width"
     :before-close="dialogBeforeClose">
     <!-- 表单数据 label-width设置所有标题宽度-->
@@ -35,9 +35,10 @@
 
 <script>
 export default {
-    data(){
-        return {
-            dialogVisible:true
+    props:{
+        showDialog:{
+            type:Boolean,
+            default:false
         }
     }
 }

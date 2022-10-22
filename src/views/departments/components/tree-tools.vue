@@ -51,6 +51,8 @@ export default {
     handleCommand(commond){
       if(commond === 'add'){
         //添加子部门
+        // 通知父组件显示弹窗 触发自定义事件 将当前节点的数据传递过去
+        this.$emit('addDepts',this.treeNode)
       }else if(commond === 'edit'){
         //编辑部门
       }else{
