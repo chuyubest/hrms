@@ -7,3 +7,11 @@ export function getDepartmentsList(){
         method:'get'
     })
 }
+
+// 删除部门api
+export function deleteDepartment(id){
+    return request({
+        url:`/company/department/${id}`,
+        method:'delete' //接口满足restful接口规范 post新增或者添加业务 put 修改业务
+    })
+}

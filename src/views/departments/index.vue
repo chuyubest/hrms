@@ -13,7 +13,7 @@
         >
           <!-- 传入内容 插槽内容 会循环多次 有多少节点就循环多少次-->
           <!-- 作用域插槽 slot-scope  接收传递给插槽的数据 data就是每个节点的数据对象-->
-          <TreeTools slot-scope="{ data }" :treeNode="data" />
+          <TreeTools slot-scope="{ data }" :treeNode="data" @delDepts="getDepartments"/>
         </el-tree>
       </el-card>
     </div>
@@ -44,6 +44,7 @@ export default {
     this.getDepartments();
   },
   methods: {
+    // 获取组织部门数据
     async getDepartments() {
       const result = await getDepartmentsList();
       this.company = { name: result.companyName, manager: "负责人" };
