@@ -1,8 +1,17 @@
 // 引入axios
 import axios from 'axios'
 import { Message } from 'element-ui'
+import router from '@/router'
 //引入store实例
 import store from '@/store'
+import {getTime} from '@/utils/auth'
+//是否超时  当前时间-缓存中的时间是否大于 时间差
+const timeOut = 2 //定义超时时间
+function checkTimeOut(){
+    let currrentTime = Date.now() //当前时间戳
+    let saveTime = getTime()
+    return (currrentTime-saveTime)/1000 > timeOut
+}
 //创建实例
 const service = axios.create({
   // 如果执行 npm run dev  值为 /api 正确  /api 这个代理只是给开发环境配置的代理
@@ -16,6 +25,13 @@ service.interceptors.request.use(config=>{
     //config是请求的配置信息
     //注入token
     if(store.getters.token){
+        //只有在有token的情况下才有必要检查时间戳
+        if(checkTimeOut){//如果它为true 过期了
+            //token没用了需要移出
+            store.dispatch('user/logout')
+            router.push('/login')
+            return Promise.reject(new Error('token超时了'))
+        }
         config.headers['Authorization'] = 'Bearer '+store.getters.token
     }
     return config //必须要返回
@@ -39,5 +55,6 @@ service.interceptors.response.use(response=>{
 }
  
 )
+
 // 导出axios实例
 export default service

@@ -13,3 +13,13 @@ export function setToken(token) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+const timeKey = 'hrms-timekey' //设置一个独一无二的key
+//获取时间戳
+export function getTime(){
+   return Cookies.get(timeKey)
+}
+//读取时间戳
+export function setTime(){
+  Cookies.set(timeKey,Date.now())
+}

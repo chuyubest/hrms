@@ -1,5 +1,5 @@
  //引入token工具函数
- import {getToken,setToken,removeToken} from '@/utils/auth'
+ import {getToken,setToken,removeToken, getTime, setTime} from '@/utils/auth'
  import {login,getUserInfo,getUserDetailById} from '@/api/user'
  //状态
  const state = {
@@ -36,6 +36,8 @@ const actions = {
     // console.log(result);
     // 修改state
     context.commit('setToken',result)
+    //拿到token 存储时间戳
+    setTime()
   },
   //获取用户信息
   async getUserInfo(context){
