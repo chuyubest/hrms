@@ -20,8 +20,10 @@
             <el-dropdown-menu slot="dropdown">
               <!-- 下拉选项 -->
               <el-dropdown-item>添加子部门</el-dropdown-item>
-              <el-dropdown-item>编辑部门</el-dropdown-item>
-              <el-dropdown-item>删除部门</el-dropdown-item>
+              <div v-if="!isRoot">
+                <el-dropdown-item>编辑部门</el-dropdown-item>
+                <el-dropdown-item>删除部门</el-dropdown-item>
+              </div>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -34,10 +36,14 @@
 export default {
   props: {
     // 定义一个传入的属性 要求对方使用该组件的时候必须传入一个treeNode
-    treeNode:{
-        required:true,
-        type:Object
-    }
+    treeNode: {
+      required: true,
+      type: Object,
+    },
+    isRoot: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
