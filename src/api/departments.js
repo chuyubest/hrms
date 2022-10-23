@@ -24,3 +24,5 @@ export function addDepartment(data){
         data
     })
 }
+
+//获取部门负责人的数据
