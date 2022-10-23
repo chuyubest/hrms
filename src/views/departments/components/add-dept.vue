@@ -1,6 +1,6 @@
 <template>
   <!-- 放置弹层组件 -->
-  <el-dialog title="新增部门" :visible="showDialog" width="width" @close="btnCancel"> 
+  <el-dialog :title="showTitle" :visible="showDialog" width="width" @close="btnCancel"> 
     <!-- 表单数据 label-width设置所有标题宽度-->
     <!-- 匿名插槽 -->
     <el-form ref="deptForm" label-width="120px" :model="formData" :rules="rules">
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { addDepartment } from '@/api/departments';
+import { addDepartment,getDepartmentDetail } from '@/api/departments';
 import {getEmployeeSimple} from '@/api/employees'
 export default {
   props: {
@@ -105,6 +105,12 @@ export default {
       peoples:[],//负责人列表
     };
   },
+  computed:{
+    //可根据有无id区别是新增还是编辑
+    showTitle(){
+        return this.formData.id ? '编辑部门':'新增部门'
+    }
+  },
   methods:{
     async getEmployeeSimple(){
       this.peoples =  await getEmployeeSimple()
@@ -124,10 +130,21 @@ export default {
         })
     },
     btnCancel(){
+        //重置数据 因为resetFields只能重置表单上的数据
+        this.formData = {
+        name: "", // 部门名称
+        code: "", // 部门编码
+        manager: "", // 部门管理者
+        introduce: "", // 部门介绍
+      }
         //关闭弹层
         this.$emit('update:showDialog',false)
-        //清空之前的校验
+        //清空之前的校验并把数据置为初始值 只能重置定义在data中的数据
         this.$refs.deptForm.resetFields()
+    },
+    //获取部门详情
+    async getDepartmentDetail(id){
+       this.formData =  await getDepartmentDetail(id)
     }
   }
 };
