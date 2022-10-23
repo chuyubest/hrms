@@ -16,7 +16,7 @@
           <TreeTools slot-scope="{ data }" :treeNode="data" @delDepts="getDepartments" @addDepts="addDept"/>
         </el-tree>
       </el-card>
-      <AddDept :showDialog = 'showDialog' :treeNode="node" @addDepts="getDepartments"/>
+      <AddDept :showDialog.sync='showDialog' :treeNode="node" @addDepts="getDepartments"/>
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <!-- 放置弹层组件 -->
-  <el-dialog title="新增部门" :visible="showDialog" width="width">
+  <el-dialog title="新增部门" :visible="showDialog" width="width" @close="btnCancel"> 
     <!-- 表单数据 label-width设置所有标题宽度-->
     <!-- 匿名插槽 -->
     <el-form ref="deptForm" label-width="120px" :model="formData" :rules="rules">
@@ -42,7 +42,7 @@
     <!-- 确定和取消 -->
     <el-row type="flex" justify="center" slot="footer">
       <el-col :span="6">
-        <el-button size="small">取消</el-button>
+        <el-button size="small" @click="btnCancel">取消</el-button>
         <el-button type="primary" size="small" @click="btnOk">确定</el-button>
       </el-col>
     </el-row>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { addDepartment, getDepartmentsList } from '@/api/departments';
+import { addDepartment } from '@/api/departments';
 import {getEmployeeSimple} from '@/api/employees'
 export default {
   props: {
@@ -117,8 +117,17 @@ export default {
                 await addDepartment({...this.formData,pid:this.treeNode.id}) //需要添加当前部门的pid来自于当前节点的id
                 // 告诉父组件重新获取最新数据
                 this.$emit('addDepts')
+                //此时修改showDialog的值 可用sync修饰符  固定写法 update:props的值
+                this.$emit('update:showDialog',false)
+                //关闭dialog的时候会触发el-dailog的close事件会调用btnCancel事件
             }
         })
+    },
+    btnCancel(){
+        //关闭弹层
+        this.$emit('update:showDialog',false)
+        //清空之前的校验
+        this.$refs.deptForm.resetFields()
     }
   }
 };

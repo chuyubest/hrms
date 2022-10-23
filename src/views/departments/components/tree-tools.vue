@@ -55,6 +55,7 @@ export default {
         this.$emit('addDepts',this.treeNode)
       }else if(commond === 'edit'){
         //编辑部门
+        
       }else{
         //删除部门 提示用户是否要删除
         this.$confirm('您确定要删除该组织部门吗?').then(()=>{
