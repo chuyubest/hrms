@@ -16,7 +16,7 @@
           <TreeTools slot-scope="{ data }" :treeNode="data" @delDepts="getDepartments" @addDepts="addDept"/>
         </el-tree>
       </el-card>
-      <AddDept :showDialog = 'showDialog' :treeNode="node"/>
+      <AddDept :showDialog = 'showDialog' :treeNode="node" @addDepts="getDepartments"/>
     </div>
   </div>
 </template>
@@ -52,7 +52,7 @@ export default {
     // 获取组织部门数据
     async getDepartments() {
       const result = await getDepartmentsList();
-      this.company = { name: result.companyName, manager: "负责人" };
+      this.company = { name: result.companyName, manager: "负责人" ,id:''};
       this.departs = transListToTreeData(result.depts,'')//需要将其转换成树形结构
       console.log(result);
     },
