@@ -18,12 +18,16 @@
           v-model="formData.code"
         />
       </el-form-item>
+      <!-- native修饰符可以找到原生元素的事件 -->
       <el-form-item label="部门负责人" prop="manager">
         <el-select
           style="width: 80%"
           placeholder="请选择"
           v-model="formData.manager"
-        />
+          @focus="getEmployeeSimple"
+        >
+        <el-option :label="person.name" :value="person.username" v-for="(person,index) in peoples" :key="person.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="部门介绍" prop="introduce">
         <el-input
@@ -47,6 +51,7 @@
 
 <script>
 import { getDepartmentsList } from '@/api/departments';
+import {getEmployeeSimple} from '@/api/employees'
 export default {
   props: {
     showDialog: {
@@ -97,8 +102,15 @@ export default {
         introduce: [{ required: true, message: '部门介绍不能为空', trigger: 'blur' },
           { trigger: 'blur', min: 1, max: 300, message: '部门介绍要求1-50个字符' }]
       },
+      peoples:[],//负责人列表
     };
   },
+  methods:{
+    async getEmployeeSimple(){
+      this.peoples =  await getEmployeeSimple()
+
+    }
+  }
 };
 </script>
 <style>
