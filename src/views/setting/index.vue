@@ -69,18 +69,19 @@
               show-icon
             >
             </el-alert>
-            <el-form label-width="100px" style="margin-top: 30px">
+            <!-- 并不是所有表单都需要model rules -->
+            <el-form label-width="100px" style="margin-top: 30px" >
               <el-form-item label="企业名称">
-                <el-input style="width: 60%" disabled></el-input>
+                <el-input style="width: 60%" disabled v-model="formData.name"></el-input>
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input style="width: 60%" disabled></el-input>
+                <el-input style="width: 60%" disabled v-model="formData.companyAddress"></el-input>
               </el-form-item>
               <el-form-item label="公司电话">
-                <el-input style="width: 60%" disabled></el-input>
+                <el-input style="width: 60%" disabled v-model="formData.companyPhone"></el-input>
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input style="width: 60%" disabled></el-input>
+                <el-input style="width: 60%" disabled v-model="formData.mailbox"></el-input>
               </el-form-item>
               <el-form-item label="备注">
                 <el-input
@@ -88,6 +89,7 @@
                   disabled
                   type="textarea"
                   rows="3"
+                  v-model="formData.remarks"
                 ></el-input>
               </el-form-item>
             </el-form>
@@ -99,7 +101,8 @@
 </template>
 
 <script>
-import {getRoleList} from '@/api/setting'
+import {getRoleList,getCompanyInfoById} from '@/api/setting'
+import {mapGetters} from 'vuex'
 export default {
   data(){
     return {
@@ -109,10 +112,17 @@ export default {
         total:0,//记录总条数
       },
       list:[],//存放角色列表
+      formData:{
+        //公司信息
+      }
     }
+  },
+  computed:{
+    ...mapGetters(['companyId'])
   },
   created(){
     this.getRoleList()
+    this.getCompanyInfoById()
   },
   methods:{
     async getRoleList(){
@@ -121,11 +131,16 @@ export default {
       this.list = rows
       console.log(rows);
     },
+    //页码切换的回调事件
     handleCurrentChange(currentPage){
       //currentPage是当前点击的页码 
       this.page.page = currentPage
       //获取最新数据
       this.getRoleList()
+    },
+    //获取id
+    async getCompanyInfoById(){
+      this.formData = await getCompanyInfoById(this.companyId)
     }
   }
 }
