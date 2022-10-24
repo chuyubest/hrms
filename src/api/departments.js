@@ -25,7 +25,13 @@ export function addDepartment(data){
     })
 }
 //修改部门
-// export 
+export function editDepartment(data){
+    return request({
+        url:`/company/department/${data.id}`,
+        method:'put',
+        data
+    })
+}
 
 //根据id获取部门详情
 export function getDepartmentDetail(id){

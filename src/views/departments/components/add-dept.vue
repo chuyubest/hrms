@@ -120,7 +120,12 @@ export default {
         // 表单校验
         this.$refs.deptForm.validate(async valid=>{
             if(valid){
+                // 根据id是否存在调用不同接口
+                if(this.formData.id){
+                    await editDepartment(this.formData)
+                }else{
                 await addDepartment({...this.formData,pid:this.treeNode.id}) //需要添加当前部门的pid来自于当前节点的id
+                }
                 // 告诉父组件重新获取最新数据
                 this.$emit('addDepts')
                 //此时修改showDialog的值 可用sync修饰符  固定写法 update:props的值
