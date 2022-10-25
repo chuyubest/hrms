@@ -18,7 +18,7 @@
         <el-table-column  label="姓名"  sortable prop="username"></el-table-column>
         <el-table-column  label="手机号"  sortable prop="mobile"></el-table-column>
         <el-table-column  label="工号"  sortable prop="workNumber" ></el-table-column>
-        <el-table-column  label="聘用形式"  sortable prop="formOfEmployment"></el-table-column>
+        <el-table-column  label="聘用形式"  sortable prop="formOfEmployment" :formatter="formatEmployment"></el-table-column>
         <el-table-column  label="部门"  sortable prop="departmentName"></el-table-column>
         <el-table-column  label="入职时间"  sortable prop="timeOfEntry"></el-table-column>
         <el-table-column  label="账户状态"  sortable prop="enableState"></el-table-column>
@@ -51,6 +51,7 @@
 
 <script>
 import {getEmployeesList} from '@/api/employees'
+import EmployeeEnum from '@/api/constant/employees' //引入员工的枚举对象
 export default {
   data(){
     return {
@@ -80,6 +81,15 @@ export default {
       //赋值最新页码 重新获取数据
       this.page.page = currentPage
       this.getEmployeesList()
+    },
+    //格式化聘用形式
+    formatEmployment(row,column,cellValue){
+      // cellValue表示单元格的值
+      //row当前行
+      //column 当前列的属性
+      // 找1所对应的值
+     const obj = EmployeeEnum.hireType.find(item=>item.id===cellValue)
+     return obj ? obj.value : '未知'
     }
   }
 }
