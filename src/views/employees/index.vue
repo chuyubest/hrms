@@ -1,9 +1,9 @@
 <template>
    <div class="dashboard-container">
-    <div class="app-container">
+    <div class="app-container" >
      <PageTools :showBefore="true">
       <!-- 左侧显示总记录数 -->
-        <span slot="before">共166条数据</span>
+        <span slot="before">共{{page.total}}条数据</span>
         <!-- 右侧显示按钮 excel导入 excel导出 新增员工 -->
         <template slot="after">
           <el-button type="success" size="small">导入</el-button>
@@ -11,16 +11,17 @@
           <el-button type="primary" size="small" icon="el-icon-plus">新增员工</el-button>
         </template> 
      </PageTools>
-     <el-card>
+     <el-card v-loading="loading">
        <!-- 表格组件 -->
-      <el-table border>
+      <el-table border :data="list">
         <el-table-column  type="index" label="序号" width="100px"></el-table-column>
-        <el-table-column  label="姓名"  sortable></el-table-column>
-        <el-table-column  label="手机号"  sortable></el-table-column>
-        <el-table-column  label="工号"  sortable></el-table-column>
-        <el-table-column  label="聘用形式"  sortable></el-table-column>
-        <el-table-column  label="部门"  sortable></el-table-column>
-        <el-table-column  label="入职时间"  sortable></el-table-column>
+        <el-table-column  label="姓名"  sortable prop="username"></el-table-column>
+        <el-table-column  label="手机号"  sortable prop="mobile"></el-table-column>
+        <el-table-column  label="工号"  sortable prop="workNumber" ></el-table-column>
+        <el-table-column  label="聘用形式"  sortable prop="formOfEmployment"></el-table-column>
+        <el-table-column  label="部门"  sortable prop="departmentName"></el-table-column>
+        <el-table-column  label="入职时间"  sortable prop="timeOfEntry"></el-table-column>
+        <el-table-column  label="账户状态"  sortable prop="enableState"></el-table-column>
         <el-table-column  label="操作"  fixed="right" width="280">
           <template slot-scope="{row,$index}">
             <el-button type="text" size="small">查看</el-button>
@@ -36,7 +37,11 @@
       <el-row type="flex" justify="center" align="middle" style="height:60px">
         <el-pagination
           layout="prev, pager, next"
-          :total="50">
+          :total="page.total"
+          :current-page="page.page"
+          :page-size="page.size"
+          @current-change="handleCurrentChange"
+          >
         </el-pagination>
       </el-row>
      </el-card>
@@ -45,8 +50,38 @@
 </template>
 
 <script>
+import {getEmployeesList} from '@/api/employees'
 export default {
-
+  data(){
+    return {
+      page:{
+        page:1,//当前页码,
+        size:10,//每页条数
+        total:0,
+      },
+      list:[],//员工列表
+      loading:false,//显示遮罩层
+    }
+  },
+  created(){
+    this.getEmployeesList()
+  },
+  methods:{
+    // 获取员工综合列表
+    async getEmployeesList(){
+      this.loading = true
+      const {total,rows} = await getEmployeesList(this.page)
+      this.page.total = total
+      this.list = rows
+      this.loading = false
+    },
+    //切换页码的事件函数
+    handleCurrentChange(currentPage){
+      //赋值最新页码 重新获取数据
+      this.page.page = currentPage
+      this.getEmployeesList()
+    }
+  }
 }
 </script>
 
