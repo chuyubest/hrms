@@ -6,7 +6,7 @@
           <!-- 左边内容 -->
           <el-tab-pane label="角色管理">
             <el-row style="height: 60px">
-              <el-button type="primary" icon="el-icon-plus" size="small"
+              <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog = true"
                 >新增角色</el-button
               >
             </el-row>
@@ -124,9 +124,11 @@
         </el-tabs>
       </el-card>
     </div>
+    <!-- close事件在点击确定的时候会触发 -->
     <el-dialog
-      title="编辑角色"
+      :title="title"
       :visible="showDialog"
+      @close="btnCancel"
     >
       <el-form label-width="120px"  ref="roleForm"  :model="roleForm" :rules="rules">
         <el-form-item label="角色名称" prop="name">
@@ -151,6 +153,7 @@ import {
   delRoleById,
   getRoleDetailById,
   updateRole,
+  addRole,
 } from "@/api/setting";
 import { mapGetters } from "vuex";
 export default {
@@ -179,6 +182,9 @@ export default {
   },
   computed: {
     ...mapGetters(["companyId"]),
+    title(){
+      return this.roleForm.id?'编辑角色':'新增角色'
+    }
   },
   created() {
     this.getRoleList();
@@ -228,19 +234,32 @@ export default {
         if (this.roleForm.id) {
           await updateRole(this.roleForm);
         }else{
-          //新增业务
+          //新增角色
+          await addRole(this.roleForm)
+
         }
         //重新获取数据
         this.getRoleList()
         this.$message.success('操作成功!')
-        //成功之后 关闭弹层 
+        //成功之后 关闭弹层会触发el-dialog的close事件
         this.showDialog = false
       } catch(error) {
         console.log(error);
       }
     },
     //
-    btnCancel() {},
+    btnCancel() {
+      
+       //清除校验规则
+      this.$refs.roleForm.resetFields()
+      //关闭弹层
+      this.showDialog = false
+     //清空数据
+      this.roleForm = {
+        name:'',
+        description:''
+      }
+    },
   },
 };
 </script>
