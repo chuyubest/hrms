@@ -1,5 +1,5 @@
 import Vue from 'vue'
-
+import Components from './components'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
@@ -20,7 +20,7 @@ import '@/permission' // permission control
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
-
+Vue.use(Components)
 Vue.config.productionTip = false
 
 Object.keys(directives).forEach(key =>{
