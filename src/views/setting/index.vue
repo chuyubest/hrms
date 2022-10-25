@@ -39,7 +39,12 @@
                   <div>
                     <el-button type="success" size="small">分配权限</el-button>
                     <el-button type="primary" size="small">编辑</el-button>
-                    <el-button type="danger" size="small">删除</el-button>
+                    <el-button
+                      type="danger"
+                      size="small"
+                      @click="delRoleById(row)"
+                      >删除</el-button
+                    >
                   </div>
                 </template>
               </el-table-column>
@@ -51,12 +56,13 @@
               align="middle"
               style="height: 60px"
             >
-              <el-pagination layout="prev, pager, next" 
-               :current-page="page.page"
-               :total="page.total" 
-               :page-size="page.pagesize"
-               @current-change="handleCurrentChange"
-               >
+              <el-pagination
+                layout="prev, pager, next"
+                :current-page="page.page"
+                :total="page.total"
+                :page-size="page.pagesize"
+                @current-change="handleCurrentChange"
+              >
               </el-pagination>
             </el-row>
           </el-tab-pane>
@@ -70,18 +76,34 @@
             >
             </el-alert>
             <!-- 并不是所有表单都需要model rules -->
-            <el-form label-width="100px" style="margin-top: 30px" >
+            <el-form label-width="100px" style="margin-top: 30px">
               <el-form-item label="企业名称">
-                <el-input style="width: 60%" disabled v-model="formData.name"></el-input>
+                <el-input
+                  style="width: 60%"
+                  disabled
+                  v-model="formData.name"
+                ></el-input>
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input style="width: 60%" disabled v-model="formData.companyAddress"></el-input>
+                <el-input
+                  style="width: 60%"
+                  disabled
+                  v-model="formData.companyAddress"
+                ></el-input>
               </el-form-item>
               <el-form-item label="公司电话">
-                <el-input style="width: 60%" disabled v-model="formData.companyPhone"></el-input>
+                <el-input
+                  style="width: 60%"
+                  disabled
+                  v-model="formData.companyPhone"
+                ></el-input>
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input style="width: 60%" disabled v-model="formData.mailbox"></el-input>
+                <el-input
+                  style="width: 60%"
+                  disabled
+                  v-model="formData.mailbox"
+                ></el-input>
               </el-form-item>
               <el-form-item label="备注">
                 <el-input
@@ -101,49 +123,60 @@
 </template>
 
 <script>
-import {getRoleList,getCompanyInfoById} from '@/api/setting'
-import {mapGetters} from 'vuex'
+import { getRoleList, getCompanyInfoById, delRoleById } from "@/api/setting";
+import { mapGetters } from "vuex";
 export default {
-  data(){
+  data() {
     return {
-      page:{
-        page:1,//当前第几页
-        pagesize:3,//每页展示多少条数据
-        total:0,//记录总条数
+      page: {
+        page: 1, //当前第几页
+        pagesize: 3, //每页展示多少条数据
+        total: 0, //记录总条数
       },
-      list:[],//存放角色列表
-      formData:{
+      list: [], //存放角色列表
+      formData: {
         //公司信息
-      }
-    }
+      },
+    };
   },
-  computed:{
-    ...mapGetters(['companyId'])
+  computed: {
+    ...mapGetters(["companyId"]),
   },
-  created(){
-    this.getRoleList()
-    this.getCompanyInfoById()
+  created() {
+    this.getRoleList();
+    this.getCompanyInfoById();
   },
-  methods:{
-    async getRoleList(){
-      const {total,rows} =  await getRoleList(this.page)
-      this.page.total = total,
-      this.list = rows
+  methods: {
+    async getRoleList() {
+      const { total, rows } = await getRoleList(this.page);
+      (this.page.total = total), (this.list = rows);
       console.log(rows);
     },
     //页码切换的回调事件
-    handleCurrentChange(currentPage){
-      //currentPage是当前点击的页码 
-      this.page.page = currentPage
+    handleCurrentChange(currentPage) {
+      //currentPage是当前点击的页码
+      this.page.page = currentPage;
       //获取最新数据
-      this.getRoleList()
+      this.getRoleList();
     },
     //获取id
-    async getCompanyInfoById(){
-      this.formData = await getCompanyInfoById(this.companyId)
-    }
-  }
-}
+    async getCompanyInfoById() {
+      this.formData = await getCompanyInfoById(this.companyId);
+    },
+    //根据id删除角色
+    async delRoleById(row) {
+      try{
+        await this.$confirm("您是否确定要删除该角色?")
+        //只有点击了确定才能进入下方
+        await delRoleById(row.id);//调用删除接口
+        this.$message.success("删除角色成功");
+        this.getRoleList()
+      }catch(error){
+        console.log(error);
+      }
+    },
+  },
+};
 </script>
 
 <style>

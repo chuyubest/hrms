@@ -13,3 +13,11 @@ export function getCompanyInfoById(companyId){
         url:`/company/${companyId}`
     })
 }
+//根据id删除角色
+export function delRoleById(id){
+    return request({
+        url:`/sys/role/${id}`,
+        method:'delete'
+    })
+   
+}
