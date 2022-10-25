@@ -38,7 +38,12 @@
                 <template slot-scope="{ row, $index }">
                   <div>
                     <el-button type="success" size="small">分配权限</el-button>
-                    <el-button type="primary" size="small">编辑</el-button>
+                    <el-button
+                      type="primary"
+                      size="small"
+                      @click="editRole(row.id)"
+                      >编辑</el-button
+                    >
                     <el-button
                       type="danger"
                       size="small"
@@ -119,11 +124,34 @@
         </el-tabs>
       </el-card>
     </div>
+    <el-dialog
+      title="编辑角色"
+      :visible="showDialog"
+    >
+      <el-form label-width="120px"  ref="roleForm"  :model="roleForm" :rules="rules">
+        <el-form-item label="角色名称" prop="name">
+          <el-input v-model="roleForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="roleForm.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-row type="flex" justify="center">
+        <el-button size="small" @click="btnCancel">取消</el-button>
+        <el-button type="primary" size="small" @click="btnOk">确定</el-button>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRoleList, getCompanyInfoById, delRoleById } from "@/api/setting";
+import {
+  getRoleList,
+  getCompanyInfoById,
+  delRoleById,
+  getRoleDetailById,
+  updateRole,
+} from "@/api/setting";
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -136,6 +164,16 @@ export default {
       list: [], //存放角色列表
       formData: {
         //公司信息
+      },
+      showDialog: false, //控制弹层的显示
+      roleForm: {
+        name: "",
+        description: "",
+      },
+      rules: {
+        name: [
+          { required: true, message: "角色名称不能为空", trigger: "blur" },
+        ],
       },
     };
   },
@@ -165,16 +203,44 @@ export default {
     },
     //根据id删除角色
     async delRoleById(row) {
-      try{
-        await this.$confirm("您是否确定要删除该角色?")
+      try {
+        await this.$confirm("您是否确定要删除该角色?");
         //只有点击了确定才能进入下方
-        await delRoleById(row.id);//调用删除接口
+        await delRoleById(row.id); //调用删除接口
         this.$message.success("删除角色成功");
-        this.getRoleList()
-      }catch(error){
+        this.getRoleList();
+      } catch (error) {
         console.log(error);
       }
     },
+    //编辑角色按钮 先获取当前角色详情
+    async editRole(id) {
+      this.roleForm = await getRoleDetailById(id); //实现数据的回写
+      //点击编辑角色显示弹层
+      this.showDialog = true;
+    },
+    //点击确定按钮 更新角色或新增
+    async btnOk() {
+      //先进行表单校验 不加回调函数返回一个promise
+      try {
+        await this.$refs.roleForm.validate();//只有校验通过才会执行下方代码
+           //如果有id 调用编辑接口
+        if (this.roleForm.id) {
+          await updateRole(this.roleForm);
+        }else{
+          //新增业务
+        }
+        //重新获取数据
+        this.getRoleList()
+        this.$message.success('操作成功!')
+        //成功之后 关闭弹层 
+        this.showDialog = false
+      } catch(error) {
+        console.log(error);
+      }
+    },
+    //
+    btnCancel() {},
   },
 };
 </script>
