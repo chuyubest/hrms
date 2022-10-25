@@ -27,6 +27,11 @@ Object.keys(directives).forEach(key =>{
   Vue.directive(key,directives[key]) //注册自定义指令
 })
 
+import * as filters from '@/filters'  //fliters是一个对象 里面有很多的函数
+Object.keys(filters).forEach(key=>{
+  Vue.filter(key,filters[key]) //注册过滤器
+})
+
 new Vue({
   el: '#app',
   router,
