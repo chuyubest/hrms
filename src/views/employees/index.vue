@@ -9,6 +9,7 @@
           <el-button type="success" size="small">导入</el-button>
           <el-button type="danger" size="small">导出</el-button>
           <el-button type="primary" size="small" icon="el-icon-plus"
+          @click="showDialog = true"
             >新增员工</el-button
           >
         </template>
@@ -94,7 +95,7 @@
       </el-card>
     </div>
     <!-- 放置组件弹层 -->
-    <AddEmployee></AddEmployee>
+    <AddEmployee :showDialog.sync="showDialog"></AddEmployee>
   </div>
 </template>
 
@@ -112,6 +113,7 @@ export default {
       },
       list: [], //员工列表
       loading: false, //显示遮罩层
+      showDialog:false,//显示弹层
     };
   },
   components:{
