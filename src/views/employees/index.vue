@@ -93,12 +93,15 @@
         </el-row>
       </el-card>
     </div>
+    <!-- 放置组件弹层 -->
+    <AddEmployee></AddEmployee>
   </div>
 </template>
 
 <script>
 import { getEmployeesList, delEmployee } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees"; //引入员工的枚举对象
+import AddEmployee from './components/add-employee.vue'
 export default {
   data() {
     return {
@@ -110,6 +113,9 @@ export default {
       list: [], //员工列表
       loading: false, //显示遮罩层
     };
+  },
+  components:{
+    AddEmployee
   },
   created() {
     this.getEmployeesList();
@@ -143,6 +149,7 @@ export default {
       try {
         //先询问是否确定删除
         await this.$confirm(`您确定要删除${row.username}吗?`);
+        //点击确定会进入下方
         //调用删除接口
         await delEmployee(row.id);
         this.$message.success("删除成功!");
