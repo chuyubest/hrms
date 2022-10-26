@@ -40,12 +40,21 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="部门" prop="departmentName">
-        <el-select
+        <el-input
           placeholder="请选择"
           style="width: 50%"
           v-model="formData.departmentName"
+          @focus="getDepartmentsList"
         >
-        </el-select>
+        </el-input>
+        <el-tree
+            :data="treeData"
+            :props="defaultProps"
+            :default-expand-all="true"
+            v-if="showTree"
+            v-loading="loading"
+           >
+        </el-tree>
       </el-form-item>
       <el-form-item label="转正时间" prop="correctionTime">
         <el-date-picker
@@ -64,6 +73,8 @@
 </template>
 
 <script>
+import {getDepartmentsList} from '@/api/departments'
+import {transListToTreeData} from '@/utils/index'
 export default {
   props: {
     showDialog: {
@@ -100,8 +111,28 @@ export default {
         departmentName: [{ required: true, message: '部门不能为空', trigger: 'change' }],
         timeOfEntry: [{ required: true, message: '入职时间', trigger: 'blur' }]
       },
+        treeData:[],
+        defaultProps:{
+            label:'name',
+            children:'children'
+        },
+        showTree:false,//默认不显示
+        loading:false,//加上一个进度条
     };
   },
+  methods:{
+    async getDepartmentsList(){
+        this.loading = true
+       const {depts} =  await getDepartmentsList()
+    //    depts是一个数组 需要转化成树形结构才可以被el-tree显示
+    //需要定义一个数组来
+       this.treeData =  transListToTreeData(depts,'')
+       this.loading = false
+       //显示tree组件
+       this.showTree = true
+       
+    }
+  }
 };
 </script>
 
