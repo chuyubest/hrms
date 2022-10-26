@@ -38,9 +38,23 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     },
+
     
   ]
   },
+  {
+    path:'/import',
+    component:Layout,
+    //不显示在左侧菜单中
+    hidden:true,
+    children:[
+      {
+        path:'',//表示默认的二级路由
+        component:()=>import('@/views/import')
+      }
+    ]
+  },
+  
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
