@@ -33,6 +33,10 @@
           </el-tab-pane>
           <el-tab-pane label="个人详情">
             <!-- 放置内容 -->
+                <!-- <UserInfo /> -->
+                <!-- 在vuejs中内置了一个组件 component -->
+                <!-- 动态组件 可以切换 -->
+                <component :is="UserComponent"/>
           </el-tab-pane>
           <el-tab-pane label="岗位信息">
             <!-- 放置内容 -->
@@ -46,13 +50,15 @@
 <script>
 import { getUserDetailById } from "@/api/user";
 import { saveUserDetailById } from "@/api/employees";
+import UserInfo from '../components/user-info.vue'
 export default {
   data() {
     return {
+      UserComponent:'UserInfo',
       userId: this.$route.params.id,
       userInfo: {
         username: "",
-        password2: "", //密码 因为读取出来的password是密文
+        password2: "" , //密码 因为读取出来的password是密文
       },
       rules: {
         username: [
@@ -64,6 +70,9 @@ export default {
         ],
       },
     }
+  },
+  components:{
+    UserInfo
   },
   created(){
     this.getUserDetailById()
