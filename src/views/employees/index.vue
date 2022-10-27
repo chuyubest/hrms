@@ -7,7 +7,7 @@
         <!-- 右侧显示按钮 excel导入 excel导出 新增员工 -->
         <template slot="after">
           <el-button type="success" size="small" @click="$router.push('/import')">导入</el-button>
-          <el-button type="danger" size="small">导出</el-button>
+          <el-button type="danger" size="small" @click="exportData">导出</el-button>
           <el-button type="primary" size="small" icon="el-icon-plus"
           @click="showDialog = true"
             >新增员工</el-button
@@ -103,6 +103,7 @@
 import { getEmployeesList, delEmployee } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees"; //引入员工的枚举对象
 import AddEmployee from './components/add-employee.vue'
+import {formatDate} from '@/filters'
 export default {
   data() {
     return {
@@ -161,7 +162,53 @@ export default {
         console.log(error);
       }
     },
-  },
+     //将表头与数据进行对应 [{}] =>[[]]
+      formatJson(headers,rows){
+        return rows.map(item=>{
+          //item是一个对象  {mobile:'1111',username:'张三'}
+          return Object.keys(headers).map(key=>{
+            if(headers[key]==='timeOfEntry' || headers[key] === 'correctionTime'){
+              return formatDate(item[headers[key]])
+            }else if(headers[key]==='formOfEmployment'){
+             const obj =  EmployeeEnum.hireType.find(obj=>obj.id === item[headers[key]])
+            return obj ?obj.value:'未知'
+           }
+            return item[headers[key]]
+          })
+        })
+      },
+    //导出excel
+    exportData(){
+       const headers = {
+        '手机号': 'mobile',
+        '姓名': 'username',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      import('@/vendor/Export2Excel').then(async excel=>{
+        //excel是引入文件的导出对象
+        //导出需要header data从哪来
+        //现在没有接口获取所有的数据
+        //获取员工的接口 页码 每页条数 用一页展示所有数据
+        const {rows} = await getEmployeesList({page:1,size:this.page.total})
+        const data = this.formatJson(headers,rows) //返回的data就是要导出的结构
+        excel.export_json_to_excel({
+          header:Object.keys(headers),
+          data,
+          filename:'员工信息表'
+        })
+        // excel.export_json_to_excel({
+        //   header:['姓名','工资'],
+        //   data:[],
+        //   filename:'员工工资表'
+        // })
+        //要将data转化成[[]] 还要与表头顺序对应上 要求转出的数据是中文
+      })
+    }
+  }
 };
 </script>
 
