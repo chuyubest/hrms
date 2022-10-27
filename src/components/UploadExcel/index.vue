@@ -1,5 +1,5 @@
 <template>
-  <div class="upload-excel">
+ <div class="upload-excel">
     <div class="btn-upload">
       <el-button :loading="loading" size="mini" type="primary" @click="handleUpload">
         点击上传
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import XLSX from 'xlsx'
+import * as XLSX from 'xlsx'
 export default {
   props: {
     beforeUpload: Function, // eslint-disable-line
@@ -118,6 +118,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped lang="scss">
 .upload-excel {
