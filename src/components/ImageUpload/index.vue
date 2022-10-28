@@ -13,6 +13,7 @@
       :on-remove="remove"
       :on-change="changeFile"
       :before-upload="beforeUpload"
+      :http-request="upload"
     >
       <i class="el-icon-plus"></i>
     </el-upload>
@@ -27,6 +28,12 @@
 </template>
 
 <script>
+import COS from 'cos-js-sdk-v5' //引入腾讯云cos包
+//实例化cos对象 只有用自己key和id才能上传到自己的存储桶
+const cos = new COS({
+    SecretId:'AKIDWu32FG3mNl05xcHqZIp69yay8pKekcVD',
+    SecretKey:'XpshIfrsiLm00mLdjfNtBF4g8NOICwSk'
+})
 export default {
   data() {
     return {
@@ -76,10 +83,28 @@ export default {
         const maxSize = 5 * 1024 * 1024 
         if(file.size > maxSize){
             //超过了限制的文件大小
-            this.$$message.error('上传的图片大小不能大于5M')
+            this.$message.error('上传的图片大小不能大于5M')
             return false;
         }
-        return true
+        return true //一定要return true
+    },
+    //上传图片方法
+    upload(params){
+        console.log(params);
+       if (params.file) {
+        // 执行上传操作
+        cos.putObject({
+          Bucket: 'chuyu-1314673649', // 存储桶
+          Region: 'ap-nanjing', // 地域
+          Key: params.file.name, // 文件名
+          Body: params.file, // 要上传的文件对象
+          StorageClass: 'STANDARD' // 上传的模式类型 直接默认 标准模式即可
+          // 上传到腾讯云 =》 哪个存储桶 哪个地域的存储桶 文件  格式  名称 回调
+        }, function(err, data) {
+          // data返回数据之后 应该如何处理
+          console.log(err || data)
+        })
+      }
     }
   },
 };
