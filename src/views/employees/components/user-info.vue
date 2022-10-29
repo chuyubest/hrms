@@ -58,7 +58,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-           
+           <ImageUpload  ref="staffPhoto"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,6 +90,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <ImageUpload ref="myStaffPhoto" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -363,19 +364,42 @@ export default {
     //获取员工的基础信息
     async getUserDetailById(){
       this.userInfo = await getUserDetailById(this.userId)
+      if(this.userInfo.staffPhoto && this.userInfo.staffPhoto.trim()){
+        //有值表示已经有了一个上传成功的图片
+        //上传成功的图片 upload:true
+        this.$refs.staffPhoto.fileList = [{upload:true,url:this.userInfo.staffPhoto}]
+      }
     },
     //获取员工的详细信息
     async getPersonalDetail(){
       this.formData =  await getPersonalDetail(this.userId)
+      if(this.formData.staffPhoto&& this.formData.staffPhoto.trim()){
+        this.$refs.myStaffPhoto.fileList = [{upload:true,url:this.formData.staffPhoto}]
+      }
     },
     //保存员工的基本信息
     async saveUser(){
-      await saveUserDetailById(this.userInfo)
+      const fileList = this.$refs.staffPhoto.fileList
+      //判断当前的图片有没有上传完成 
+      if(fileList.some(item=>item.upload !== true)){
+        // 说明此时有图片还没有上传成功
+        this.$message.warning('此时还有图片没有上传完成')
+        return
+      }
+      //由于接口问题必须给一个有空格的字符串
+      await saveUserDetailById({...this.userInfo,staffPhoto:fileList.length>0?fileList[0].url:' '})
       this.$message.success('保存用户基本信息成功')
     },
     //存储员工的详细信息
     async savePersonal(){
-      await updatePersonal(this.formData)
+      const fileList = this.$refs.myStaffPhoto.fileList
+      //判断当前的图片有没有上传完成 
+      if(fileList.some(item=>item.upload !== true)){
+        // 说明此时有图片还没有上传成功
+        this.$message.warning('此时还有图片没有上传完成')
+        return
+      }
+      await updatePersonal({...this.formData,staffPhoto:fileList.length>0?fileList[0].url:' '})
       this.$message.success('保存用户详细信息成功')
     }
   }
