@@ -1,7 +1,7 @@
 <template>
-  <div class="dashboard-container" id="myPrint">
-    <div class="app-container">
-      <el-card>
+  <div class="dashboard-container" >
+    <div class="app-container" >
+      <el-card id="myPrint">
         <el-breadcrumb separator="/" class="titInfo ">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>
@@ -9,6 +9,9 @@
           </el-breadcrumb-item>
           <el-breadcrumb-item>打印</el-breadcrumb-item>
         </el-breadcrumb>
+        <el-row type="flex" justify="end">
+            <el-button type="primary" size="mini" v-print="printObj">打印</el-button>
+        </el-row>
         <div v-if="type === 'personal'">
           <h2 class="centInfo">员工信息表</h2>
           <table cellspacing="0" width="100%" class="tableList">
@@ -334,6 +337,9 @@ export default {
   data() {
     return {
       formData: {},
+      printObj:{
+        id:'myPrint'
+      },
       userId: this.$route.params.id,
       type: this.$route.query.type // 打印类型
     }
