@@ -37,13 +37,10 @@ const cos = new COS({
 export default {
   data() {
     return {
-      fileList: [
-        {
-          url: "https://img1.baidu.com/it/u=3009731526,373851691&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1667062800&t=06ff08fd8af69238b2c4fa693016178c",
-        },
-      ],
+      fileList: [],
       showDialog:false,
-      imgUrl:''
+      imgUrl:'',
+      currentFileUid:null
     };
   },
   computed:{
@@ -86,6 +83,7 @@ export default {
             this.$message.error('上传的图片大小不能大于5M')
             return false;
         }
+        this.currentFileUid = file.uid
         return true //一定要return true
     },
     //上传图片方法
@@ -100,9 +98,27 @@ export default {
           Body: params.file, // 要上传的文件对象
           StorageClass: 'STANDARD' // 上传的模式类型 直接默认 标准模式即可
           // 上传到腾讯云 =》 哪个存储桶 哪个地域的存储桶 文件  格式  名称 回调
-        }, function(err, data) {
+        }, (err, data) =>{
           // data返回数据之后 应该如何处理
           console.log(err || data)
+          //data中有一个状态statusCode === 200 表示上传成功
+          if(!err && data.statusCode === 200){
+            // 要获取成功的返回地址 
+            //fileList 才能显示上传组件 要把fileList中的数据地址变成上传成功的地址
+            //需要知道当前上传成功的是哪一张图片
+            this.fileList =  this.fileList.map(item=>{
+              //去找谁uid等于刚刚记录下来的id
+              if(item.uid === this.currentFileUid){
+                return {
+                  url:'http://'+data.Location, //将返回的地址赋值给原来的url
+                  upload:true //upload为true表示这张图片已经上传完毕 为后期应用做标记
+                  //保存=>图片有大有小=>上传速度有快有慢=>表示有么有上传完毕
+                }
+              }
+              return item
+            })
+            //将上传成功的地址回写到了fileList中 fileList一变化 upload组件就会根据变化渲染视图
+          }
         })
       }
     }
