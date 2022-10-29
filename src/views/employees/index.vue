@@ -27,6 +27,12 @@
             sortable
             prop="username"
           ></el-table-column>
+          <el-table-column width="120px" label="头像" align="center">
+            <!-- 插槽 -->
+            <template slot-scope="{row}">
+             <img :src="row.staffPhoto" alt="" style="width:100px;border-radius:50%" v-imageError="defaultImage">
+            </template>
+          </el-table-column>
           <el-table-column
             label="手机号"
             sortable
@@ -107,6 +113,7 @@ import {formatDate} from '@/filters'
 export default {
   data() {
     return {
+      defaultImage:require('@/assets/common/head1.jpg'),
       page: {
         page: 1, //当前页码,
         size: 10, //每页条数
