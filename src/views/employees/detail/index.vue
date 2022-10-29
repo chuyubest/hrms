@@ -32,15 +32,29 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="个人详情">
+            <el-row type="flex" justify="end">
+              <el-tooltip content="打印个人基本信息">
+                <router-link :to="`/employees/print/${userId}?type=personal`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <!-- 放置内容 -->
-                <!-- <UserInfo /> -->
-                <!-- 在vuejs中内置了一个组件 component -->
-                <!-- 动态组件 可以切换 -->
-                <component :is="UserComponent"/>
+            <!-- <UserInfo /> -->
+            <!-- 在vuejs中内置了一个组件 component -->
+            <!-- 动态组件 可以切换 -->
+            <component :is="UserComponent" />
           </el-tab-pane>
           <el-tab-pane label="岗位信息">
             <!-- 放置内容 -->
-            <component :is="JobComponent"/>
+             <el-row type="flex" justify="end">
+              <el-tooltip content="打印岗位信息">
+                <router-link :to="`/employees/print/${userId}?type=job`">
+                  <i class="el-icon-printer"  />
+                </router-link>
+              </el-tooltip>
+    </el-row>
+            <component :is="JobComponent" />
           </el-tab-pane>
         </el-tabs>
       </el-card>
@@ -51,17 +65,17 @@
 <script>
 import { getUserDetailById } from "@/api/user";
 import { saveUserDetailById } from "@/api/employees";
-import UserInfo from '../components/user-info.vue'
-import JobInfo from '../components/job-info.vue'
+import UserInfo from "../components/user-info.vue";
+import JobInfo from "../components/job-info.vue";
 export default {
   data() {
     return {
-      UserComponent:'UserInfo',
-      JobComponent:'JobInfo',
+      UserComponent: "UserInfo",
+      JobComponent: "JobInfo",
       userId: this.$route.params.id,
       userInfo: {
         username: "",
-        password2: "" , //密码 因为读取出来的password是密文
+        password2: "", //密码 因为读取出来的password是密文
       },
       rules: {
         username: [
@@ -72,28 +86,30 @@ export default {
           { min: 6, max: 9, message: "密码长度6-9位", trigger: "blur" },
         ],
       },
-    }
+    };
   },
-  components:{
+  components: {
     UserInfo,
-    JobInfo
+    JobInfo,
   },
-  created(){
-    this.getUserDetailById()
+  created() {
+    this.getUserDetailById();
   },
-  methods:{
-    async getUserDetailById(){
-        this.userInfo = await getUserDetailById(this.userId)
+  methods: {
+    async getUserDetailById() {
+      this.userInfo = await getUserDetailById(this.userId);
     },
-    saveUser(){
-        //先进行表单校验
-        this.$refs.userForm.validate().then(async()=>{
-            await saveUserDetailById({...this.userInfo,password:this.userInfo.password2})
-            this.$message.success('修改用户信息成功')
-            }
-        )
-    }
-  }
+    saveUser() {
+      //先进行表单校验
+      this.$refs.userForm.validate().then(async () => {
+        await saveUserDetailById({
+          ...this.userInfo,
+          password: this.userInfo.password2,
+        });
+        this.$message.success("修改用户信息成功");
+      });
+    },
+  },
 };
 </script>
 

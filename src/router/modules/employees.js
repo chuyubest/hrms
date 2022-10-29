@@ -20,6 +20,13 @@ export default {
         meta:{
             title:'员工详情'
         }
+    },{
+        path:'print/:id',//动态路由参数 添加?表示该参数可传可不传
+        component:()=>import('@/views/employees/print'),
+        hidden:true,//表示该内容不在左侧菜单显示
+        meta:{
+            title:'员工打印'
+        }
     }
 ]
 }
