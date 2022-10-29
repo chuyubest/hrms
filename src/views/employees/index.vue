@@ -6,10 +6,20 @@
         <span slot="before">共{{ page.total }}条数据</span>
         <!-- 右侧显示按钮 excel导入 excel导出 新增员工 -->
         <template slot="after">
-          <el-button type="success" size="small" @click="$router.push('/import')">导入</el-button>
-          <el-button type="danger" size="small" @click="exportData">导出</el-button>
-          <el-button type="primary" size="small" icon="el-icon-plus"
-          @click="showDialog = true"
+          <el-button
+            type="success"
+            size="small"
+            @click="$router.push('/import')"
+            >导入</el-button
+          >
+          <el-button type="danger" size="small" @click="exportData"
+            >导出</el-button
+          >
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-plus"
+            @click="showDialog = true"
             >新增员工</el-button
           >
         </template>
@@ -29,8 +39,14 @@
           ></el-table-column>
           <el-table-column width="120px" label="头像" align="center">
             <!-- 插槽 -->
-            <template slot-scope="{row}">
-             <img :src="row.staffPhoto" alt="" style="width:100px;border-radius:50%" v-imageError="defaultImage">
+            <template slot-scope="{ row }">
+              <img
+                :src="row.staffPhoto"
+                alt=""
+                style="width: 100px; border-radius: 50%"
+                v-imageError="defaultImage"
+                @click="showQrcode(row.staffPhoto)"
+              />
             </template>
           </el-table-column>
           <el-table-column
@@ -71,7 +87,12 @@
           </el-table-column>
           <el-table-column label="操作" fixed="right" width="280">
             <template slot-scope="{ row, $index }">
-              <el-button type="text" size="small" @click="$router.push(`/employees/detail/${row.id}`)">查看</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="$router.push(`/employees/detail/${row.id}`)"
+                >查看</el-button
+              >
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
@@ -102,18 +123,25 @@
     </div>
     <!-- 放置组件弹层 -->
     <AddEmployee :showDialog.sync="showDialog"></AddEmployee>
+    <el-dialog title="二维码" :visible.sync="showCodeDialog" width="width">
+      <el-row type="flex" justify="center">
+        <canvas ref="myCanvas"></canvas>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getEmployeesList, delEmployee } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees"; //引入员工的枚举对象
-import AddEmployee from './components/add-employee.vue'
-import {formatDate} from '@/filters'
+import AddEmployee from "./components/add-employee.vue";
+import { formatDate } from "@/filters";
+import Qrcode from "qrcode";
 export default {
   data() {
     return {
-      defaultImage:require('@/assets/common/head1.jpg'),
+      showCodeDialog: false, //显示二维码弹层
+      defaultImage: require("@/assets/common/head1.jpg"),
       page: {
         page: 1, //当前页码,
         size: 10, //每页条数
@@ -121,11 +149,11 @@ export default {
       },
       list: [], //员工列表
       loading: false, //显示遮罩层
-      showDialog:false,//显示弹层
+      showDialog: false, //显示弹层
     };
   },
-  components:{
-    AddEmployee
+  components: {
+    AddEmployee,
   },
   created() {
     this.getEmployeesList();
@@ -169,53 +197,76 @@ export default {
         console.log(error);
       }
     },
-     //将表头与数据进行对应 [{}] =>[[]]
-      formatJson(headers,rows){
-        return rows.map(item=>{
-          //item是一个对象  {mobile:'1111',username:'张三'}
-          return Object.keys(headers).map(key=>{
-            if(headers[key]==='timeOfEntry' || headers[key] === 'correctionTime'){
-              return formatDate(item[headers[key]])
-            }else if(headers[key]==='formOfEmployment'){
-             const obj =  EmployeeEnum.hireType.find(obj=>obj.id === item[headers[key]])
-            return obj ?obj.value:'未知'
-           }
-            return item[headers[key]]
-          })
-        })
-      },
+    //将表头与数据进行对应 [{}] =>[[]]
+    formatJson(headers, rows) {
+      return rows.map((item) => {
+        //item是一个对象  {mobile:'1111',username:'张三'}
+        return Object.keys(headers).map((key) => {
+          if (
+            headers[key] === "timeOfEntry" ||
+            headers[key] === "correctionTime"
+          ) {
+            return formatDate(item[headers[key]]);
+          } else if (headers[key] === "formOfEmployment") {
+            const obj = EmployeeEnum.hireType.find(
+              (obj) => obj.id === item[headers[key]]
+            );
+            return obj ? obj.value : "未知";
+          }
+          return item[headers[key]];
+        });
+      });
+    },
     //导出excel
-    exportData(){
-       const headers = {
-        '手机号': 'mobile',
-        '姓名': 'username',
-        '入职日期': 'timeOfEntry',
-        '聘用形式': 'formOfEmployment',
-        '转正日期': 'correctionTime',
-        '工号': 'workNumber',
-        '部门': 'departmentName'
-      }
-      import('@/vendor/Export2Excel').then(async excel=>{
+    exportData() {
+      const headers = {
+        手机号: "mobile",
+        姓名: "username",
+        入职日期: "timeOfEntry",
+        聘用形式: "formOfEmployment",
+        转正日期: "correctionTime",
+        工号: "workNumber",
+        部门: "departmentName",
+      };
+      import("@/vendor/Export2Excel").then(async (excel) => {
         //excel是引入文件的导出对象
         //导出需要header data从哪来
         //现在没有接口获取所有的数据
         //获取员工的接口 页码 每页条数 用一页展示所有数据
-        const {rows} = await getEmployeesList({page:1,size:this.page.total})
-        const data = this.formatJson(headers,rows) //返回的data就是要导出的结构
+        const { rows } = await getEmployeesList({
+          page: 1,
+          size: this.page.total,
+        });
+        const data = this.formatJson(headers, rows); //返回的data就是要导出的结构
         excel.export_json_to_excel({
-          header:Object.keys(headers),
+          header: Object.keys(headers),
           data,
-          filename:'员工信息表'
-        })
+          filename: "员工信息表",
+        });
         // excel.export_json_to_excel({
         //   header:['姓名','工资'],
         //   data:[],
         //   filename:'员工工资表'
         // })
         //要将data转化成[[]] 还要与表头顺序对应上 要求转出的数据是中文
-      })
-    }
-  }
+      });
+    },
+    //显示图片二维码
+    showQrcode(url) {
+      //url存在的时候才显示弹层 图片链接
+      if (url) {
+        this.showCodeDialog = true;
+        //可以使用$nextTick在上一次数据更新完毕,页面渲染完毕
+        this.$nextTick(() => {
+          //此时可以确认已经有ref对象 
+          Qrcode.toCanvas(this.$refs.myCanvas, url);//将地址转换为二维码
+        });
+      } else {
+        //提示用户
+        this.$message.warning("当前用户还未上传头像");
+      }
+    },
+  },
 };
 </script>
 
