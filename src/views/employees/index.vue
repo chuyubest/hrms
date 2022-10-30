@@ -124,7 +124,7 @@
     <!-- 放置组件弹层 -->
     <AddEmployee :showDialog.sync="showDialog"></AddEmployee>
     <!-- 放置分配角色弹层 -->
-    <AssignRole :showRoleDialog="showRoleDialog" :userId="userId" ref="assignRole"></AssignRole>
+    <AssignRole :showRoleDialog.sync="showRoleDialog" :userId="userId" ref="assignRole"></AssignRole>
     <el-dialog title="二维码" :visible.sync="showCodeDialog" width="width">
       <el-row type="flex" justify="center">
         <canvas ref="myCanvas"></canvas>

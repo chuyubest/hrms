@@ -92,5 +92,15 @@ export function saveUserDetailById(data){
       data
     })
   }
+  //给用户分配角色 需要携带角色信息和用户id
+  export function assignRoles(data){
+    return request({
+      url:'/sys/role/assignPrem',
+      methods:'put',
+      data
+    })
+  }
+
+
 
   
