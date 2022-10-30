@@ -96,7 +96,7 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="showRole(row.id)">角色</el-button>
               <el-button type="text" size="small" @click="delEmployee(row)"
                 >删除</el-button
               >
@@ -123,6 +123,7 @@
     </div>
     <!-- 放置组件弹层 -->
     <AddEmployee :showDialog.sync="showDialog"></AddEmployee>
+    <AssignRole :showRoleDialog="showRoleDialog" :userId="userId"></AssignRole>
     <el-dialog title="二维码" :visible.sync="showCodeDialog" width="width">
       <el-row type="flex" justify="center">
         <canvas ref="myCanvas"></canvas>
@@ -135,11 +136,13 @@
 import { getEmployeesList, delEmployee } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees"; //引入员工的枚举对象
 import AddEmployee from "./components/add-employee.vue";
+import AssignRole from './components/assign-role'
 import { formatDate } from "@/filters";
 import Qrcode from "qrcode";
 export default {
   data() {
     return {
+      showRoleDialog:false,//显示分配角色弹框
       showCodeDialog: false, //显示二维码弹层
       defaultImage: require("@/assets/common/head1.jpg"),
       page: {
@@ -149,11 +152,13 @@ export default {
       },
       list: [], //员工列表
       loading: false, //显示遮罩层
-      showDialog: false, //显示弹层
+      showDialog: false, //显示弹层,
+      userId:'',
     };
   },
   components: {
     AddEmployee,
+    AssignRole
   },
   created() {
     this.getEmployeesList();
@@ -266,6 +271,13 @@ export default {
         this.$message.warning("当前用户还未上传头像");
       }
     },
+    //点击角色按钮 给员工分配角色
+    showRole(id){
+      //显示弹层
+      this.showRoleDialog = true
+      //将id赋值并传给子组件
+      this.userId = id
+    }
   },
 };
 </script>
