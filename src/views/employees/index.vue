@@ -123,7 +123,8 @@
     </div>
     <!-- 放置组件弹层 -->
     <AddEmployee :showDialog.sync="showDialog"></AddEmployee>
-    <AssignRole :showRoleDialog="showRoleDialog" :userId="userId"></AssignRole>
+    <!-- 放置分配角色弹层 -->
+    <AssignRole :showRoleDialog="showRoleDialog" :userId="userId" ref="assignRole"></AssignRole>
     <el-dialog title="二维码" :visible.sync="showCodeDialog" width="width">
       <el-row type="flex" justify="center">
         <canvas ref="myCanvas"></canvas>
@@ -272,11 +273,13 @@ export default {
       }
     },
     //点击角色按钮 给员工分配角色
-    showRole(id){
-      //显示弹层
-      this.showRoleDialog = true
+    async showRole(id){
       //将id赋值并传给子组件
-      this.userId = id
+      this.userId = id //props
+      //调用子组件的方法
+      await this.$refs.assignRole.getAssignedRoles(id) //异步方法
+       //显示弹层
+      this.showRoleDialog = true
     }
   },
 };
