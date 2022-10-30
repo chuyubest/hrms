@@ -1,8 +1,8 @@
 //导出权限的路由规则
 import Layout from '@/layout'
 export default {
-    path:'/employees',
-    name:'employees',//给模块一级路由添加name属性 后面做权限管理的时候应用
+    path:'/permission',
+    name:'permission',//给模块一级路由添加name属性 后面做权限管理的时候应用
     component:Layout,
     children:[{
         //二级路由的page不写表示二级路由的默认路由
