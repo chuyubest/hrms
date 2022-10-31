@@ -37,7 +37,12 @@
       </el-table>
     </div>
     <!-- 新增和编辑弹层 -->
-    <el-dialog :title="showTitle" :visible.sync="showDialog" width="width" @close="btnCancel">
+    <el-dialog
+      :title="showTitle"
+      :visible.sync="showDialog"
+      width="width"
+      @close="btnCancel"
+    >
       <!-- 表单 -->
       <el-form
         label-width="120px"
@@ -109,10 +114,10 @@ export default {
   created() {
     this.getPermissionList();
   },
-  computed:{
-    showTitle(){
-      return this.formData.id ? '编辑权限':'新增权限'
-    }
+  computed: {
+    showTitle() {
+      return this.formData.id ? "编辑权限" : "新增权限";
+    },
   },
   methods: {
     async getPermissionList() {
@@ -124,16 +129,15 @@ export default {
     //删除权限
     async delPermission(id) {
       // 提示用户是否要删
-        try {
-         await  this.$confirm("是否要删除该权限")
-          //根据权限点的id删除权限
-          await delPermission(id);
-          //重新获取数据
-          this.getPermissionList();
-          this.$message.success("操作成功!");
-        } catch (error) {
-          console.log(error);
-        }
+      try {
+        await this.$confirm("是否要删除该权限");
+        //根据权限点的id删除权限
+        await delPermission(id);
+        //重新获取数据
+        this.getPermissionList();
+        this.$message.success("操作成功!");
+      } catch (error) {
+        console.log(error);
       }
     },
     //添加权限
@@ -142,7 +146,7 @@ export default {
       //pid代表当前权限的父节点id
       this.formData.type = type;
       this.formData.pid = pid;
-      this.showDialog = true
+      this.showDialog = true;
     },
     //点击表单确定按钮
     btnOk() {
@@ -159,7 +163,7 @@ export default {
           this.$message.success("操作成功!");
           //获取最新数据
           this.getPermissionList();
-          this.showDialog = false
+          this.showDialog = false;
         }
       });
     },
@@ -172,19 +176,19 @@ export default {
         type: "", // 类型 该类型 不需要显示 因为点击添加的时候已经知道类型了
         pid: "", // 因为做的是树 需要知道添加到哪个节点下了
         enVisible: "0", // 开启
-      }
+      };
       //清除校验
-      this.$refs.permissionForm.resetFields()
-      this.showDialog = false
+      this.$refs.permissionForm.resetFields();
+      this.showDialog = false;
     },
     //编辑权限
     async editPermission(id) {
       //先根据id查询当前权限点详情进行回显
       this.formData = await getPermissionDetail(id);
-      this.showDialog = true
-    }
-  }
-
+      this.showDialog = true;
+    },
+  },
+};
 </script>
 
 <style>

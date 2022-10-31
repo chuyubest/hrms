@@ -37,7 +37,7 @@
               >
                 <template slot-scope="{ row, $index }">
                   <div>
-                    <el-button type="success" size="small" @click="assignPermission" >分配权限</el-button>
+                    <el-button type="success" size="small" @click="assignPermission(row.id)" >分配权限</el-button>
                     <el-button
                       type="primary"
                       size="small"
@@ -146,7 +146,13 @@
     <!-- 放置分配权限弹层 -->
     <el-dialog title="分配权限" :visible='showPermDialog'>
       <!-- 权限是一个树形结构 -->
-      <el-tree :data="permData" :props="defaultProps" default-expand-all="">
+       <!-- check-strictly父子勾选是否互相关联 -->
+      <el-tree :data="permData" :props="defaultProps" 
+      default-expand-all 
+      :show-checkbox="true"
+      :check-strictly="true"
+      node-key="id"
+      :default-checked-keys="permIds">
       </el-tree>
       <el-row type="flex" justify="center" slot="footer">
         <el-col :span="6">
@@ -197,7 +203,9 @@ export default {
       defaultProps:{
         label:'name',
         children:'children'
-      }
+      },
+      roleId:null,//记录给哪个角色分配权限
+      permIds:[],//当前角色的权限点
     };
   },
   computed: {
@@ -281,10 +289,15 @@ export default {
       }
     },
     //分配权限按钮
-    async assignPermission(){
+    async assignPermission(id){
       //获取权限点数据
       //并将数据转化为树形结构
       this.permData = transListToTreeData(await getPermissionList(),'0')
+      //把id存起来 
+      this.roleId = id
+      //获取该角色的当前权限
+      const {permIds} = await getRoleDetailById(id)
+      this.permIds = permIds
       this.showPermDialog = true
     }
   },
