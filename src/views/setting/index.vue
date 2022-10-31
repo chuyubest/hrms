@@ -37,7 +37,7 @@
               >
                 <template slot-scope="{ row, $index }">
                   <div>
-                    <el-button type="success" size="small">分配权限</el-button>
+                    <el-button type="success" size="small" @click="assignPermission" >分配权限</el-button>
                     <el-button
                       type="primary"
                       size="small"
@@ -143,6 +143,18 @@
         <el-button type="primary" size="small" @click="btnOk">确定</el-button>
       </el-row>
     </el-dialog>
+    <!-- 放置分配权限弹层 -->
+    <el-dialog title="分配权限" :visible='showPermDialog'>
+      <!-- 权限是一个树形结构 -->
+      <el-tree :data="permData" :props="defaultProps" default-expand-all="">
+      </el-tree>
+      <el-row type="flex" justify="center" slot="footer">
+        <el-col :span="6">
+          <el-button type="primary" size="small">确定</el-button>
+          <el-button  size="small">取消</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -155,7 +167,9 @@ import {
   updateRole,
   addRole,
 } from "@/api/setting";
+import {getPermissionList} from '@/api/permission'
 import { mapGetters } from "vuex";
+import {transListToTreeData} from '@/utils/index'
 export default {
   data() {
     return {
@@ -178,6 +192,12 @@ export default {
           { required: true, message: "角色名称不能为空", trigger: "blur" },
         ],
       },
+      showPermDialog:false,//控制分配权限弹层的显示
+      permData:[],//权限点数据
+      defaultProps:{
+        label:'name',
+        children:'children'
+      }
     };
   },
   computed: {
@@ -260,6 +280,13 @@ export default {
         description:''
       }
     },
+    //分配权限按钮
+    async assignPermission(){
+      //获取权限点数据
+      //并将数据转化为树形结构
+      this.permData = transListToTreeData(await getPermissionList(),'0')
+      this.showPermDialog = true
+    }
   },
 };
 </script>

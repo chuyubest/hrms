@@ -122,10 +122,10 @@ export default {
       console.log(data);
     },
     //删除权限
-    delPermission(id) {
-      // 提示用户是否要删除
-      this.$confirm("是否要删除该权限").then(async () => {
+    async delPermission(id) {
+      // 提示用户是否要删
         try {
+         await  this.$confirm("是否要删除该权限")
           //根据权限点的id删除权限
           await delPermission(id);
           //重新获取数据
@@ -134,7 +134,7 @@ export default {
         } catch (error) {
           console.log(error);
         }
-      });
+      }
     },
     //添加权限
     addPermission(type, pid) {
@@ -142,7 +142,7 @@ export default {
       //pid代表当前权限的父节点id
       this.formData.type = type;
       this.formData.pid = pid;
-      this.showDialog = true;
+      this.showDialog = true
     },
     //点击表单确定按钮
     btnOk() {
@@ -181,10 +181,10 @@ export default {
     async editPermission(id) {
       //先根据id查询当前权限点详情进行回显
       this.formData = await getPermissionDetail(id);
-      this.showDialog = true;
-    },
-  },
-};
+      this.showDialog = true
+    }
+  }
+
 </script>
 
 <style>
