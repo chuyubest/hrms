@@ -14,9 +14,18 @@ router.beforeEach(async(to,from,next)=>{
     }else{
       //如果vuex中有用户id表示已经获取了 没有id才需要获取用户资料
       if(!store.getters.userId){
-        await store.dispatch('user/getUserInfo')
+        // async 返回的内容可用await接收
+        const {roles} = await store.dispatch('user/getUserInfo')
+        //筛选用户的可用的路由 得到动态路由
+        const newRoutes = await store.dispatch('permission/filterRoutes',roles.menus)
+        console.log(newRoutes);
+        //动态路由添加到路由表中 默认的路由表只有静态路由
+        router.addRoutes(newRoutes) //必须用next(地址)
+        next(to.path)  //相当于跳到对应的地址 相当于多做一次跳转
+      }else{
+        next()
       }
-      next()
+      
     }
   }else{//没有token
     //是否在白名单
