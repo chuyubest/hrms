@@ -15,7 +15,7 @@ import Print from 'vue-print-nb'
 import * as directives from '@/directives'
 import '@/icons' // icon
 import '@/permission' // permission control
-
+import checkPermission from '@/mixin/checkPermission'
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
@@ -32,6 +32,10 @@ import * as filters from '@/filters'  //fliters是一个对象 里面有很多�
 Object.keys(filters).forEach(key=>{
   Vue.filter(key,filters[key]) //注册过滤器
 })
+
+
+// 全局混入检查对象
+Vue.mixin(checkPermission) //表示所有组件都拥有了一个检查方法
 
 new Vue({
   el: '#app',
