@@ -20,7 +20,7 @@ router.beforeEach(async(to,from,next)=>{
         const newRoutes = await store.dispatch('permission/filterRoutes',roles.menus)
         console.log(newRoutes);
         //动态路由添加到路由表中 默认的路由表只有静态路由
-        router.addRoutes(newRoutes) //必须用next(地址)
+        router.addRoutes([...newRoutes,{ path: '*', redirect: '/404', hidden: true }]) //必须用next(地址)
         next(to.path)  //相当于跳到对应的地址 相当于多做一次跳转
       }else{
         next()

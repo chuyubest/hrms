@@ -1,6 +1,7 @@
  //引入token工具函数
  import {getToken,setToken,removeToken, getTime, setTime} from '@/utils/auth'
  import {login,getUserInfo,getUserDetailById} from '@/api/user'
+ import {resetRouter} from '@/router'
  //状态
  const state = {
   //设置token的初始状态
@@ -56,6 +57,14 @@ const actions = {
     context.commit('removeToken')
     //删除用户资料
     context.commit('removeUserInfo')
+    //重置路由
+    resetRouter()
+    //将vuex中的权限设置为初始状态
+    //vuex子模块怎么调用子模块的action 没加命名空间的话可以随意调用
+    //不加的话 mutations和action都是挂载在全局上的所以可以直接调用
+    //加了命名空间的context不是全局的context而是当前模块下的
+    // 第三个参数是一个对象 {root:true} 调用根级的mutation action
+    context.commit('permission/setRoutes',[],{root:true})
   }
 
 }
