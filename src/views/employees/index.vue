@@ -97,7 +97,7 @@
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
               <el-button type="text" size="small" @click="showRole(row.id)">角色</el-button>
-              <el-button type="text" size="small" @click="delEmployee(row)"
+              <el-button type="text" size="small" @click="delEmployee(row)" :disabled="checkPermission('point-user-delete')"
                 >删除</el-button
               >
             </template>
