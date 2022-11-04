@@ -33,6 +33,7 @@ Object.keys(filters).forEach(key=>{
   Vue.filter(key,filters[key]) //注册过滤器
 })
 
+import i18n from '@/lang'
 
 // 全局混入检查对象
 Vue.mixin(checkPermission) //表示所有组件都拥有了一个检查方法
@@ -40,6 +41,7 @@ Vue.mixin(checkPermission) //表示所有组件都拥有了一个检查方法
 new Vue({
   el: '#app',
   router,
+  i18n,
   store,
   render: h => h(App)
 })
