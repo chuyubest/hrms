@@ -48,6 +48,7 @@ Object.keys(filters).forEach(key=>{
 
 // 全局混入检查对象
 Vue.mixin(checkPermission) //表示所有组件都拥有了一个检查方法
+// locale决定当前的多语言类型
 const i18n = new VueI18n({
   locale: Cookie.get('language') || 'zh', // 从cookie中获取语言类型 获取不到就是中文
   messages: {

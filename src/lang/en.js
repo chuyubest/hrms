@@ -1,6 +1,6 @@
 export default {
   route: {
-    dashboard: 'Dashboard',
+    Dashboard: 'Dashboard',
     manage: 'manage',
     users: 'users',
     menus: 'menus',

@@ -1,6 +1,6 @@
 export default {
   route: {
-    dashboard: '首页',
+    Dashboard: '首页',
     manage: '后台管理',
     users: '用户管理',
     menus: '菜单管理',
