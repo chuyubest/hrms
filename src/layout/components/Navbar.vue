@@ -12,10 +12,12 @@
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu">
+      <!-- 切换语言组件 -->
+      <LangSelector class="right-menu-item"/>
       <!-- 放置全屏插件 -->
       <ScreenFull class="right-menu-item"/>
-      <!-- 放置切换主题颜色组件 -->
-      <ThemePicker class="right-menu-item" />
+       <!-- 放置切换主题颜色组件 -->
+      <ThemePicker class="right-menu-item" style="margin-top:15px"/>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="staffPhoto" class="user-avatar" v-imageError="defaultImg" />
