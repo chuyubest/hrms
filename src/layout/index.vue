@@ -8,6 +8,7 @@
       <div :class="{'fixed-header':fixedHeader}">
         <!-- 头部导航 -->
         <navbar />
+       <TagsView/>
       </div>
       <!-- 右侧下面主体部分 -->
       <app-main />
