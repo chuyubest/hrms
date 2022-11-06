@@ -71,8 +71,9 @@ export const asyncRoutes = [
   socialRouter
 ]
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  mode: 'history', // require service support
+  base:'hr/',//默认的前缀地址
+  scrollBehavior: () => ({ y: 0 }),//管理滚动行为 如果出现滚动 切换就让页面回到顶部
   routes:  [...constantRoutes]
 })
 
